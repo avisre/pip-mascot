@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('pip', {
   onToggleClickThrough: (cb) => ipcRenderer.on('toggle-click-through', (e) => cb()),
   onRefreshUsage: (cb) => ipcRenderer.on('refresh-usage', (e) => cb()),
   onToggleBadge: (cb) => ipcRenderer.on('toggle-badge', (e) => cb()),
+  onSetScale: (cb) => ipcRenderer.on('set-scale', (e, scale) => cb(scale)),
   setIgnoreMouseEvents: (ignore, options) => {
     ipcRenderer.send('set-ignore-mouse-events', ignore, options);
   }

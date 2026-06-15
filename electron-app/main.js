@@ -153,12 +153,28 @@ function createTray() {
   const icon = nativeImage.createFromBuffer(buf, { width: size, height: size });
   tray = new Tray(icon);
   tray.setToolTip(MASCOT_NAME);
+  refreshTrayMenu();
+}
 
+// Rebuilt whenever state changes (e.g. size) so radio checkmarks stay in sync.
+function refreshTrayMenu() {
+  if (!tray) return;
+  const sizeOption = (label, value) => ({
+    label, type: 'radio',
+    checked: Math.abs(pipScale - value) < 0.001,
+    click: () => setScale(value)
+  });
   const menu = Menu.buildFromTemplate([
     { label: `${MASCOT_NAME} 🐾`, enabled: false },
     { type: 'separator' },
     { label: 'Toggle Pause', click: togglePause },
     { label: 'Toggle Click-Through', click: toggleClickThrough },
+    { label: 'Size', submenu: [
+      sizeOption('Small', 0.8),
+      sizeOption('Normal', 1.0),
+      sizeOption('Large', 1.3),
+      sizeOption('Huge', 1.6),
+    ] },
     { type: 'separator' },
     { label: 'Refresh Usage Now', click: refreshUsage },
     { label: 'Show Usage Details', click: toggleBadge },
@@ -171,6 +187,19 @@ function createTray() {
 let paused = false;
 let clickThroughEnabled = false;
 let badgeVisible = false;
+let pipScale = 1;
+
+// Resize Pip: scale the window and zoom the page together; the renderer scales its
+// edge/ground math to match. Default 1.0 means startup is unaffected.
+function setScale(s) {
+  pipScale = s;
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.setSize(Math.round(WINDOW_W * s), Math.round(WINDOW_H * s));
+    mainWindow.webContents.setZoomFactor(s);
+    mainWindow.webContents.send('set-scale', s);
+  }
+  refreshTrayMenu();
+}
 
 function togglePause() {
   paused = !paused;

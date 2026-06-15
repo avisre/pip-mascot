@@ -58,6 +58,20 @@ npm start
 
 Pip starts walking along the bottom of your screen, with a 🐾 in your system tray.
 
+### Add Pip to your app menu (launcher)
+
+To launch Pip from your applications menu instead of a terminal:
+
+```bash
+cd pip-mascot/electron-app
+./linux/install-launcher.sh
+```
+
+This installs a desktop entry to `~/.local/share/applications/pip-mascot.desktop`
+pointing at this checkout — then just search for **Pip** in your app grid. (Packaged
+`.deb`/AppImage builds create their own launcher automatically; this is for run-from-source
+setups.)
+
 ### Option B — build and install a package
 
 ```bash
@@ -146,8 +160,12 @@ The OAuth token is read from your existing Claude Code login:
 
 ## Tray menu
 
-Click the 🐾 tray icon for: Pause, Click-Through (let clicks pass through Pip),
-Refresh Usage, Show Usage Details, Quit.
+Click the 🐾 tray icon for:
+
+- **Toggle Pause** / **Toggle Click-Through** (let clicks pass through Pip)
+- **Size** — resize Pip: Small (0.8×), Normal (1×), Large (1.3×), Huge (1.6×)
+- **Refresh Usage Now** / **Show Usage Details**
+- **Quit**
 
 ---
 
