@@ -244,8 +244,18 @@ ipcMain.on('move-window', (event, x, y) => {
 // Right-clicking Pip opens the same menu as the tray — handy when the desktop
 // hides the tray icon (e.g. GNOME without an AppIndicator extension).
 ipcMain.on('show-context-menu', () => {
-  buildMenu().popup(mainWindow ? { window: mainWindow } : undefined);
+  if (!mainWindow) return;
+  // The window is non-focusable, so a popup menu won't display until we briefly
+  // allow focus; restore it once the menu closes.
+  mainWindow.setFocusable(true);
+  const menu = buildMenu();
+  menu.once('menu-will-close', () => { if (mainWindow) mainWindow.setFocusable(false); });
+  menu.popup({ window: mainWindow });
 });
+
+// Always-available quit: double-clicking Pip sends this, so you can close it even
+// if the tray icon and the popup menu are unavailable on your desktop.
+ipcMain.on('quit-app', () => app.quit());
 
 ipcMain.handle('get-screen-info', () => {
   const display = screen.getPrimaryDisplay();

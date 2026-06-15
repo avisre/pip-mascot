@@ -164,8 +164,10 @@ The OAuth token is read from your existing Claude Code login:
   ground and carries on walking. (Disabled while Click-Through is on.)
 - **Right-click Pip** — opens the menu (Quit, Size, …) right at the cursor. Handy on GNOME,
   where the tray icon may be hidden without an AppIndicator extension.
-- Only **one** Pip runs at a time — launching again just focuses the existing one, so you
-  never end up with several you can't quit.
+- **Double-click Pip to quit** — a guaranteed way to close him, even when the tray icon and
+  the right-click menu aren't available on your desktop.
+- Only **one** Pip runs at a time — launching again just exits, so you never end up with
+  several you can't quit.
 
 ## Tray menu
 

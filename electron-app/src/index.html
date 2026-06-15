@@ -360,6 +360,12 @@
       if (window.pip) window.pip.showContextMenu();
     });
 
+    // Double-click Pip to quit — a guaranteed escape hatch that works wherever
+    // the tray icon or popup menu don't (uses the same pointer path as dragging).
+    canvas.addEventListener('dblclick', () => {
+      if (window.pip) window.pip.quitApp();
+    });
+
     // ── Start! ────────────────────────────────────────────────────────────
     init().catch(err => {
       console.error('Init failed:', err);
