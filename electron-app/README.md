@@ -41,6 +41,60 @@ Output lands in `dist/`. Builds are produced with
 
 ---
 
+## Install on Linux
+
+**Prerequisites:** [Node.js](https://nodejs.org/) 18 or newer (LTS recommended) and `git`.
+You also need to be logged into Claude Code so Pip has usage data to read
+(`~/.claude/.credentials.json` must exist).
+
+### Option A — run from source (quickest)
+
+```bash
+git clone https://github.com/avisre/pip-mascot.git
+cd pip-mascot/electron-app
+npm install
+npm start
+```
+
+Pip starts walking along the bottom of your screen, with a 🐾 in your system tray.
+
+### Option B — build and install a package
+
+```bash
+cd pip-mascot/electron-app
+npm install
+npm run build:linux        # produces dist/*.AppImage and dist/*.deb
+```
+
+**AppImage** (portable, no install):
+
+```bash
+chmod +x dist/Pip-*.AppImage
+./dist/Pip-*.AppImage
+```
+
+> If you see `dlopen(): error loading libfuse.so.2`, AppImages need FUSE 2:
+> `sudo apt install libfuse2` (Ubuntu 22.04) or `sudo apt install libfuse2t64`
+> (Ubuntu 24.04+). Alternatively run it extracted:
+> `./dist/Pip-*.AppImage --appimage-extract-and-run`.
+
+**`.deb`** (Debian/Ubuntu):
+
+```bash
+sudo apt install ./dist/Pip_*.deb      # installs to /opt and adds a desktop entry
+```
+
+Then launch **Pip** from your app menu.
+
+### Wayland
+
+No setup needed — `main.js` forces the app onto X11/XWayland automatically, because
+transparent always-on-top windows misbehave on some Wayland compositors. If your tray
+icon doesn't appear on GNOME, install a tray extension such as
+[AppIndicator Support](https://extensions.gnome.org/extension/615/appindicator-support/).
+
+---
+
 ## How it works
 
 Pip is two processes that talk over IPC:
@@ -116,3 +170,18 @@ This is the Electron port. The original macOS/Swift app lives at the repo root
 [TenzinDhonyoe/pip-mascot](https://github.com/TenzinDhonyoe/pip-mascot). Shared art lives
 in [`../mascot`](../mascot); this port also ships its own frame-by-frame sprites in
 [`assets/`](assets).
+
+---
+
+## Credits & thanks
+
+🐾 **Pip was created by [Tenzin Dhonyoe](https://github.com/TenzinDhonyoe)** —
+[`TenzinDhonyoe/pip-mascot`](https://github.com/TenzinDhonyoe/pip-mascot).
+
+Huge thanks to Tenzin for the original macOS app: the concept, the adorable mascot art,
+the walk-cycle animation, and the whole "your usage as a little creature" idea. This
+cross-platform Electron port simply stands on that work so the rest of us — on Windows and
+Linux — can have Pip walking along our screens too. All the charm is theirs; please go
+star the [original repo](https://github.com/TenzinDhonyoe/pip-mascot). 💛
+
+Licensed under [MIT](../LICENSE), same as the original.
