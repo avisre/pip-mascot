@@ -15,7 +15,7 @@ export class Renderer {
     const w = this.canvas.width;
     const h = this.canvas.height;
     const cx = w / 2;
-    const ground = h - 90;
+    const ground = h - 5;
 
     ctx.clearRect(0, 0, w, h);
 

@@ -7,7 +7,14 @@ if (process.platform === 'linux') {
   app.commandLine.appendSwitch('disable-features', 'UseOzonePlatform');
   app.commandLine.appendSwitch('ozone-platform', 'x11');
 }
-app.commandLine.appendSwitch('force-device-scale-factor', '1');
+
+// Electron's SUID sandbox needs chrome-sandbox to be root-owned with mode 4755,
+// which isn't the case for a run-from-source checkout. Where the unprivileged
+// user-namespace sandbox is unavailable (Ubuntu's AppArmor restrictions — hit
+// when GNOME launches us from the dock's systemd scope), Electron aborts before
+// any window appears. Disable the sandbox; safe here since Pip only loads local,
+// trusted files.
+app.commandLine.appendSwitch('no-sandbox');
 
 const path = require('path');
 const fs = require('fs');
@@ -16,7 +23,7 @@ const os = require('os');
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const WINDOW_W = 280;
-const WINDOW_H = 300;
+const WINDOW_H = 230;
 const MASCOT_NAME = 'Pip';
 
 // Show notifications under "Pip" rather than the default "Electron".

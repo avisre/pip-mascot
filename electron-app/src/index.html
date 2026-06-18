@@ -8,8 +8,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      width: 280px;
-      height: 300px;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
       background: transparent;
       user-select: none;
@@ -25,6 +25,11 @@
 
     canvas {
       display: block;
+      /* Fill the actual window viewport so the fixed-size drawing buffer maps 1:1
+         to the window's physical pixels at any devicePixelRatio (GNOME fractional
+         scaling reports dpr 1.6, which otherwise overflows the window). */
+      width: 100vw;
+      height: 100vh;
     }
 
     /* Circular spinner shown while Pip's sprites load, so a launcher click gives
@@ -148,7 +153,7 @@
 </head>
 <body>
   <div id="app">
-    <canvas id="mascot-canvas" width="280" height="300"></canvas>
+    <canvas id="mascot-canvas" width="280" height="230"></canvas>
     <div id="bubble-overlay"></div>
     <div id="loader"></div>
     <div id="loader-label">Loading Pip…</div>
@@ -220,7 +225,7 @@
         x: screenInfo.x,
         y: screenInfo.y,
         width: screenInfo.width,
-        height: screenInfo.height - 300 // effective walkable area
+        height: screenInfo.height - 230 // effective walkable area
       };
       const pos = engine.startPosition(visibleRect, true);
       engine.x = pos.x;
@@ -238,7 +243,7 @@
 
       // ── Animation loop ──────────────────────────────────────────────────
       function loop(timestamp) {
-        // Window is 280×300 logical px scaled by pipScale, so the screen-edge and
+        // Window is 280×230 logical px scaled by pipScale, so the screen-edge and
         // ground math scales too (the page itself is zoomed to match in the main process).
         const winW = 280 * pipScale;
         const margin = ((280 - 110) / 2) * pipScale;
@@ -250,7 +255,7 @@
         // Lift the resting line a little off the very bottom edge so Pip's feet aren't
         // clipped by the screen edge or a dock/taskbar sitting there.
         const BOTTOM_MARGIN = 0;
-        const groundY = screenInfo.y + screenInfo.height - 300 * pipScale + 1 - BOTTOM_MARGIN;
+        const groundY = screenInfo.y + screenInfo.height - 230 * pipScale + 1 - BOTTOM_MARGIN;
 
         // Self-heal: if any coordinate ever goes non-finite, snap back to a sane spot
         // rather than feeding NaN to the window (which would otherwise freeze Pip).

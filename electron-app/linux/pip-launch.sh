@@ -27,12 +27,15 @@ cd "$APPDIR" || exit 1
   echo "APPDIR=$APPDIR"
 } >> "$LOG" 2>&1
 
+# --no-sandbox: a run-from-source checkout has no root-owned chrome-sandbox, and
+# when GNOME launches us from the dock the user-namespace sandbox is blocked, so
+# Electron would abort. Safe for a local-only mascot.
 if [ -x ./node_modules/electron/dist/electron ]; then
-  echo "starting: ./node_modules/electron/dist/electron ." >> "$LOG" 2>&1
-  exec ./node_modules/electron/dist/electron . >> "$LOG" 2>&1
+  echo "starting: ./node_modules/electron/dist/electron --no-sandbox ." >> "$LOG" 2>&1
+  exec ./node_modules/electron/dist/electron --no-sandbox . >> "$LOG" 2>&1
 elif command -v npx >/dev/null 2>&1; then
-  echo "starting: npx electron ." >> "$LOG" 2>&1
-  exec npx electron . >> "$LOG" 2>&1
+  echo "starting: npx electron --no-sandbox ." >> "$LOG" 2>&1
+  exec npx electron --no-sandbox . >> "$LOG" 2>&1
 else
   echo "Electron isn't installed. Run 'npm install' in $APPDIR first." | tee -a "$LOG" >&2
   exit 1
