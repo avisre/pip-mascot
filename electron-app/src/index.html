@@ -322,6 +322,13 @@
         // if it's standing still when resized.
         currentWindowX = -1e9;
       });
+      window.pip.onRecenter(() => {
+        // A second launcher click "summons" Pip: teleport him to the middle of the
+        // screen so he's easy to find, instead of the click doing nothing.
+        const winW = 280 * pipScale;
+        engine.x = screenInfo.x + screenInfo.width / 2 - winW / 2;
+        currentWindowX = -1e9; // force the loop to reposition this frame
+      });
     }
 
     // ── Drag: pick Pip up and carry him anywhere ────────────────────────────

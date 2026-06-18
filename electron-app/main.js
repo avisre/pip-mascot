@@ -331,7 +331,16 @@ ipcMain.handle('poll-usage', async () => {
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.on('second-instance', () => { /* already running; keep the existing one */ });
+  app.on('second-instance', () => {
+    // Already running. Don't silently exit (that looks like a broken launcher) —
+    // bring the existing Pip to the middle of the screen so the click visibly
+    // summons him.
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.webContents.send('recenter');
+    }
+  });
   app.whenReady().then(() => {
     createTray();
     createWindow();
