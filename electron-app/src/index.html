@@ -248,11 +248,16 @@
         // Window is 280×230 logical px scaled by pipScale, so the screen-edge and
         // ground math scales too (the page itself is zoomed to match in the main process).
         const winW = 280 * pipScale;
-        const margin = ((280 - 110) / 2) * pipScale;
-        const minX = screenInfo.x - margin;
-        const maxX = screenInfo.x + screenInfo.width + margin - winW;
+        // Turn at the screen edges and keep the whole window on-screen. Going
+        // off-screen doesn't work here: the compositor pins the window to x=0, so
+        // Pip would appear stuck at the left edge for seconds while he "walks back".
+        const minX = screenInfo.x;
+        const maxX = screenInfo.x + screenInfo.width - winW;
 
         engine.tick(timestamp);
+        // Keep Pip on-screen even if a turn animation overshoots the boundary.
+        if (engine.x < minX) engine.x = minX;
+        else if (engine.x > maxX) engine.x = maxX;
 
         // Lift the resting line a little off the very bottom edge so Pip's feet aren't
         // clipped by the screen edge or a dock/taskbar sitting there.
