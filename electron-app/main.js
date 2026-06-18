@@ -223,7 +223,13 @@ let pipScale = 1;
 function setScale(s) {
   pipScale = s;
   if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.setSize(Math.round(WINDOW_W * s), Math.round(WINDOW_H * s));
+    const w = Math.round(WINDOW_W * s);
+    const h = Math.round(WINDOW_H * s);
+    // resizable:false pins the window size on some platforms, so setSize can grow
+    // but not shrink. Toggle it around the resize so Pip can scale both ways.
+    mainWindow.setResizable(true);
+    mainWindow.setSize(w, h);
+    mainWindow.setResizable(false);
     mainWindow.webContents.send('set-scale', s);
   }
   refreshTrayMenu();
@@ -261,10 +267,13 @@ ipcMain.on('set-ignore-mouse-events', (event, ignore, options) => {
 ipcMain.on('move-window', (event, x, y) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win || win.isDestroyed()) return;
-  // Guard against NaN/Infinity — setPosition throws a "conversion failure" that
-  // crashes the whole main process, so just ignore a bad move.
+  // Guard against NaN/Infinity AND finite-but-out-of-range values — setPosition
+  // needs an in-range 32-bit int, and anything else throws a "conversion failure"
+  // that crashes the whole main process. Ignore non-finite, clamp the rest to a
+  // safe range well beyond any real screen.
   if (!Number.isFinite(x) || !Number.isFinite(y)) return;
-  win.setPosition(Math.round(x), Math.round(y));
+  const clamp = (v) => Math.max(-32000, Math.min(32000, Math.round(v)));
+  win.setPosition(clamp(x), clamp(y));
 });
 
 // Right-clicking Pip opens the same menu as the tray — handy when the desktop
