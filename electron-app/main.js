@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, screen } = require('electron');
+const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, screen, Notification } = require('electron');
 
 // Force X11 backend on Linux/Wayland to avoid scale/position weirdness
 if (process.platform === 'linux') {
@@ -18,6 +18,19 @@ const os = require('os');
 const WINDOW_W = 280;
 const WINDOW_H = 300;
 const MASCOT_NAME = 'Pip';
+
+// Show notifications under "Pip" rather than the default "Electron".
+app.setName(MASCOT_NAME);
+
+// Small desktop notification so the user gets feedback (Pip woke up / one is
+// already running) instead of a launcher click that seems to do nothing.
+function notify(title, body) {
+  try {
+    if (Notification.isSupported()) {
+      new Notification({ title, body, silent: true }).show();
+    }
+  } catch (_) { /* notifications are best-effort */ }
+}
 
 let mainWindow = null;
 let tray = null;
@@ -335,6 +348,7 @@ if (!app.requestSingleInstanceLock()) {
     // Already running. Don't silently exit (that looks like a broken launcher) —
     // bring the existing Pip to the middle of the screen so the click visibly
     // summons him.
+    notify(`${MASCOT_NAME} is already running 🐾`, 'Bringing him to the centre of your screen.');
     if (mainWindow && !mainWindow.isDestroyed()) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.show();
@@ -344,6 +358,10 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     createTray();
     createWindow();
+    // Confirm Pip finished loading and tell the user where to look for him.
+    mainWindow.webContents.once('did-finish-load', () => {
+      notify(`${MASCOT_NAME} is awake 🐾`, 'Look along the bottom of your screen.');
+    });
   });
 }
 

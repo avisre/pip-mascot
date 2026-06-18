@@ -7,4 +7,4 @@ Exec=@@LAUNCH@@
 Icon=@@ICON@@
 Terminal=false
 Categories=Utility;
-StartupNotify=false
+StartupNotify=true
