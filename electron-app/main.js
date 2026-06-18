@@ -16,7 +16,7 @@ const os = require('os');
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const WINDOW_W = 280;
-const WINDOW_H = 230;
+const WINDOW_H = 300;
 const MASCOT_NAME = 'Pip';
 
 let mainWindow = null;
