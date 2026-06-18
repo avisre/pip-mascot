@@ -131,7 +131,10 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
-      zoomFactor: 1.0
+      zoomFactor: 1.0,
+      // Keep the animation loop running when Pip is occluded/backgrounded —
+      // otherwise Chromium throttles requestAnimationFrame and he freezes mid-walk.
+      backgroundThrottling: false
     }
   });
 
