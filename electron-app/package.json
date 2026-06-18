@@ -1,14 +1,21 @@
 {
   "name": "pip-mascot",
   "version": "2.0.0",
-  "description": "Pip 🐾 — a Claude-usage-aware desktop mascot (Electron cross-platform port)",
+  "description": "Pip 🐾 — a Claude-usage-aware desktop mascot. Cross-platform Electron port of the original macOS app by Tenzin Dhonyoe.",
   "main": "main.js",
   "author": {
-    "name": "avisre",
-    "email": "avinashsreekumar007@gmail.com"
+    "name": "Tenzin Dhonyoe",
+    "url": "https://github.com/TenzinDhonyoe"
   },
+  "contributors": [
+    {
+      "name": "avisre",
+      "url": "https://github.com/avisre",
+      "comment": "Cross-platform Electron port (Windows/Linux)"
+    }
+  ],
   "license": "MIT",
-  "homepage": "https://github.com/avisre/pip-mascot",
+  "homepage": "https://github.com/TenzinDhonyoe/pip-mascot",
   "scripts": {
     "start": "electron .",
     "start:dev": "electron --enable-logging .",
@@ -30,6 +37,7 @@
     "linux": {
       "target": ["AppImage", "deb"],
       "category": "Utility",
+      "maintainer": "avisre <avisre@users.noreply.github.com>",
       "icon": "build/icon.png",
       "executableName": "pip",
       "executableArgs": ["--no-sandbox"],
