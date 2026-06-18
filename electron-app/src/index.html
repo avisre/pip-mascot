@@ -27,6 +27,32 @@
       display: block;
     }
 
+    /* Circular spinner shown while Pip's sprites load, so a launcher click gives
+       immediate "it's working" feedback instead of an empty transparent window. */
+    #loader {
+      position: absolute;
+      left: 50%;
+      top: 62%;
+      width: 46px;
+      height: 46px;
+      margin: -23px 0 0 -23px;
+      border: 5px solid rgba(204, 120, 92, 0.22);
+      border-top-color: rgba(204, 120, 92, 0.95);
+      border-radius: 50%;
+      animation: pip-spin 0.8s linear infinite;
+    }
+    #loader-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(62% + 32px);
+      text-align: center;
+      font-size: 11px;
+      color: rgba(51, 48, 43, 0.6);
+    }
+    #loader.hidden, #loader-label.hidden { display: none; }
+    @keyframes pip-spin { to { transform: rotate(360deg); } }
+
     #bubble-overlay {
       position: absolute;
       top: 2px;
@@ -124,6 +150,8 @@
   <div id="app">
     <canvas id="mascot-canvas" width="280" height="300"></canvas>
     <div id="bubble-overlay"></div>
+    <div id="loader"></div>
+    <div id="loader-label">Loading Pip…</div>
   </div>
 
   <script type="module">
@@ -137,6 +165,16 @@
     // ── Globals ────────────────────────────────────────────────────────────
     const canvas = document.getElementById('mascot-canvas');
     const renderer = new Renderer(canvas);
+    // Hide the loading spinner once Pip is ready to be drawn. Keep it up for a
+    // short minimum so it's actually visible feedback rather than a flicker.
+    const loaderStart = performance.now();
+    function hideLoader() {
+      const wait = Math.max(0, 700 - (performance.now() - loaderStart));
+      setTimeout(() => {
+        document.getElementById('loader')?.classList.add('hidden');
+        document.getElementById('loader-label')?.classList.add('hidden');
+      }, wait);
+    }
     const store = new UsageStore();
     const engine = new WalkEngine(store);
     const poller = new OAuthPoller(store);
@@ -255,6 +293,7 @@
 
         requestAnimationFrame(loop);
       }
+      hideLoader(); // sprites are loaded and Pip is positioned — drop the spinner
       requestAnimationFrame(loop);
     }
 
@@ -385,6 +424,7 @@
     // ── Start! ────────────────────────────────────────────────────────────
     init().catch(err => {
       console.error('Init failed:', err);
+      hideLoader();
       // Fallback animation loop without full init
       requestAnimationFrame(function loop(timestamp) {
         engine.tick(timestamp);
