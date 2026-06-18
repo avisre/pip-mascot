@@ -213,13 +213,14 @@ let clickThroughEnabled = false;
 let badgeVisible = false;
 let pipScale = 1;
 
-// Resize Pip: scale the window and zoom the page together; the renderer scales its
-// edge/ground math to match. Default 1.0 means startup is unaffected.
+// Resize Pip: grow the window and the canvas (which fills it) scales Pip up with
+// it; the renderer scales its edge/ground math and the usage bubble to match.
+// (No setZoomFactor — the 100vw canvas already scales with the window, and zoom
+// would only resize the HTML bubble, not Pip.) Default 1.0 leaves startup as-is.
 function setScale(s) {
   pipScale = s;
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.setSize(Math.round(WINDOW_W * s), Math.round(WINDOW_H * s));
-    mainWindow.webContents.setZoomFactor(s);
     mainWindow.webContents.send('set-scale', s);
   }
   refreshTrayMenu();

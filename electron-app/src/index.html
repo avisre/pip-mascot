@@ -62,7 +62,7 @@
       position: absolute;
       top: 2px;
       left: 50%;
-      transform: translateX(-50%) scale(0.7);
+      transform: translateX(-50%) scale(calc(0.7 * var(--pip-scale, 1)));
       transform-origin: top center;
       pointer-events: none;
       z-index: 10;
@@ -363,6 +363,8 @@
       });
       window.pip.onSetScale((s) => {
         pipScale = s;
+        // Scale the usage bubble to match Pip's new size.
+        document.documentElement.style.setProperty('--pip-scale', s);
         // Force the next frame to reposition so Pip stays on the ground line even
         // if it's standing still when resized.
         currentWindowX = -1e9;
