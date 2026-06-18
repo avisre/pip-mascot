@@ -3,6 +3,12 @@
   "version": "2.0.0",
   "description": "Pip 🐾 — a Claude-usage-aware desktop mascot (Electron cross-platform port)",
   "main": "main.js",
+  "author": {
+    "name": "avisre",
+    "email": "avinashsreekumar007@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/avisre/pip-mascot",
   "scripts": {
     "start": "electron .",
     "start:dev": "electron --enable-logging .",
@@ -23,7 +29,15 @@
     ],
     "linux": {
       "target": ["AppImage", "deb"],
-      "category": "Utility"
+      "category": "Utility",
+      "icon": "build/icon.png",
+      "executableName": "pip",
+      "executableArgs": ["--no-sandbox"],
+      "synopsis": "A Claude-usage-aware desktop mascot",
+      "description": "Pip is a transparent, always-on-top character that walks along the bottom of your screen and changes mood based on your live Claude Code usage.",
+      "desktop": {
+        "StartupWMClass": "Pip"
+      }
     },
     "win": {
       "target": ["nsis"]
