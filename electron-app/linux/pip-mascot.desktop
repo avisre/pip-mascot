@@ -8,3 +8,4 @@ Icon=@@ICON@@
 Terminal=false
 Categories=Utility;
 StartupNotify=true
+StartupWMClass=Pip
